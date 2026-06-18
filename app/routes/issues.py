@@ -1,6 +1,6 @@
 import uuid
 from fastapi import APIRouter, HTTPException, status
-from app.schemas import IssueCreate, IssueOut, IssueUpdate
+from app.schemas import IssueCreate, IssueOut, IssueUpdate, IssueStatus
 from app.storage import load_data, save_data
 
 router = APIRouter(prefix="api/v1/issues", tags=["issues"])
@@ -27,3 +27,14 @@ def created_issue(payload: IssueCreated):
     issues.append(new_issue)
     save_data(issues)
     return new_issue
+
+
+@router.get("/{issue_id}", response_model=IssueOut)
+def get_issue(issue_id: str):
+    """retrieve a specific issue by ID."""
+    issues = load_data()
+    for issue in issues:
+        if issue["id"] == issue_id:
+            return issue
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                        detail="Issue not found")
