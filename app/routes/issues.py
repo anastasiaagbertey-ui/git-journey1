@@ -15,7 +15,7 @@ def get_issues():
 
 @router.post("/", response_model=IssueOut, status_code=status.HTTP_201_CREATED)
 def created_issue(payload: IssueCreate):
-    """ Create a new issue"""
+    """Create a new issue."""
     issues = load_data()
     new_issue = {
         "id": str(uuid.uuid4()),
@@ -38,3 +38,34 @@ def get_issue(issue_id: str):
             return issue
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Issue not found")
+
+
+@router.put("/{issue_id}", response_model=IssueOut)
+def update_issue(issue_id: str, payload: IssueUpdate):
+    """Update an existing issue."""
+    issues = load_data()
+    for index, issue in enumerate(issues):
+        if issue["id"] == issue_id:
+            updated_issue = {
+                "id": issue["id"],
+                "title": payload.title if payload.title is not None else issue["title"],
+                "description": payload.description if payload.description is not None else issue["description"],
+                "priority": payload.priority.value if payload.priority is not None else issue["priority"],
+                "status": payload.status.value if payload.status is not None else issue["status"],
+            }
+            issues[index] = updated_issue
+            save_data(issues)
+            return updated_issue
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
+
+
+@router.delete("/{issue_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_issue(issue_id: str):
+    """Delete an issue by ID."""
+    issues = load_data()
+    for index, issue in enumerate(issues):
+        if issue["id"] == issue_id:
+            issues.pop(index)
+            save_data(issues)
+            return
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
