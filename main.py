@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 # from pydantic import BaseModel
 from app.routes.issues import router as issues_router
+import uvicorn
+import os
 
 # class Item(BaseModel):
 # item_id: str
@@ -16,7 +18,12 @@ def health_check():
     return {"status": "ok"}
 
 
-app.include_router(issues_router)
+app.include_router(issues_router, prefix="/api/v1/issues", tags=["issues"])
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
 # items = [
 #   Item(item_id="foo", value="The Foo Item"),
