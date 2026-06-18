@@ -22,7 +22,7 @@ def created_issue(payload: IssueCreate):
         "title": payload.title,
         "description": payload.description,
         "priority": payload.priority,
-        "status": IssueStatus.open,
+        "status": IssueStatus.OPEN,
     }
     issues.append(new_issue)
     save_data(issues)
@@ -38,4 +38,3 @@ def get_issue(issue_id: str):
             return issue
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Issue not found")
-
