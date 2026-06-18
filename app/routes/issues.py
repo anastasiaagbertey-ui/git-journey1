@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from app.schemas import IssueCreate, IssueOut, IssueUpdate, IssueStatus
 from app.storage import load_data, save_data
 
-router = APIRouter(prefix="api/v1/issues", tags=["issues"])
+router = APIRouter(prefix="/api/v1/issues", tags=["issues"])
 
 
 @router.get("/", response_model=list[IssueOut])
@@ -14,11 +14,11 @@ def get_issues():
 
 
 @router.post("/", response_model=IssueOut, status_code=status.HTTP_201_CREATED)
-def created_issue(payload: IssueCreated):
+def created_issue(payload: IssueCreate):
     """ Create a new issue"""
     issues = load_data()
     new_issue = {
-        "id": tr(uuid.uuid4()),
+        "id": str(uuid.uuid4()),
         "title": payload.title,
         "description": payload.description,
         "priority": payload.priority,
@@ -38,3 +38,4 @@ def get_issue(issue_id: str):
             return issue
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Issue not found")
+
