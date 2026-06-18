@@ -19,9 +19,9 @@ app.include_router(issues_router)
 # ]
 
 
-# @app.get("/health")
-# def health_check():
-#   return {"status": "ok"}
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 
 # @app.get("/items")
