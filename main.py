@@ -10,6 +10,12 @@ from app.routes.issues import router as issues_router
 app = FastAPI()
 
 
+@app.get("/health")
+def health_check():
+    """Simple health check endpoint."""
+    return {"status": "ok"}
+
+
 app.include_router(issues_router)
 
 # items = [
